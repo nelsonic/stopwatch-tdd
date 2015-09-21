@@ -8,7 +8,10 @@
   <body>
     <div id='main' style='padding: 2em;'>
       <h1>Start the timer!</h1>
-
+      <h2 id='timer'>00</h2>
+      <button onClick="T.start()">Start</button>
+      <button onClick="T.stop()">Stop</button>
+      <button onClick="T.clear()">Clear</button>
     </div>
 
     <div id="qunit"></div>
@@ -17,23 +20,82 @@
     <script src="https://code.jquery.com/qunit/qunit-1.18.0.js"></script>
 
     <script>
+    console.log("Hello FAC6!");
     var T = (function(){
-      
-      var timeElapsed = 0; // number of miliseconds since timerStarted
-      var timeStarted = 0; // timestamp when timer was started
 
+      var timeElapsed = 0; // number of ms since timerStarted
+      var timeStarted = 0; // timestamp when timer was started
+      var timer;
+      var element = document.getElementById('timer');
+      function counting() {
+        timer = setInterval(function() {
+          timeElapsed = Date.now() - timeStarted;
+          element.innerHTML = timeElapsed;
+          console.log(timeElapsed);
+        }, 50)
+      }
+
+      function getTimeElapsed() {
+        return timeElapsed;
+      }
+
+      function start() {
+        timeStarted = Date.now();
+        counting();
+        return;
+      }
+
+      function stop() {
+        clearInterval(timer);
+      }
+
+      function clear() {
+        timeElapsed = 0;
+        element.innerHTML = timeElapsed;
+      }
       // allow external access to private variables & methods by returning them:
       return {
           timeStarted: timeStarted,
-          timeElapsed: timeElapsed
+          timeElapsed: timeElapsed,
+          start: start,
+          stop: stop,
+          clear: clear,
+          getTimeElapsed: getTimeElapsed
       };
     }());
     </script>
 
     <script>
-    test('The timer is zero before it is started', function(assert) {
-      assert.equal( T.timeElapsed, 0, 'Message: timer is zero at start' );
-    });
+      test('The timer is zero before it is started', function(assert) {
+        equal( T.timeElapsed, 0, 'Message: timer is zero at start' );
+      });
+
+      test('When the timer is started it begins counting up', function(assert) {
+        var done = assert.async();
+        T.start();
+        setTimeout(function(){
+          var result = Math.round(T.getTimeElapsed() / 1000);
+          equal(result, 2, 'Timer counted two seconds!')
+          done();
+        }, 2000);
+      }); 
+
+      test('Stop the timer', function(assert){
+        var done = assert.async();
+        setTimeout(function(){
+          T.stop();
+          var result = Math.round(T.getTimeElapsed() / 1000);
+          equal(result, 3, 'Timer counted two seconds!')
+          done();
+        }, 1000);
+      })
+
+      test('Clear resets the timer', function(assert){
+        T.clear();
+        var result = T.getTimeElapsed();
+        assert.equal(result, 0, "Timer has been reset to zero");
+      });
+
 
     </script>
   </body>
