@@ -1,0 +1,40 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Stopwatch TDD</title>
+    <link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-1.18.0.css">
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+  </head>
+  <body>
+    <div id='main' style='padding: 2em;'>
+      <h1>Start the timer!</h1>
+
+    </div>
+
+    <div id="qunit"></div>
+    <div id="qunit-fixture"></div>
+
+    <script src="https://code.jquery.com/qunit/qunit-1.18.0.js"></script>
+
+    <script>
+    var T = (function(){
+      
+      var timeElapsed = 0; // number of miliseconds since timerStarted
+      var timeStarted = 0; // timestamp when timer was started
+
+      // allow external access to private variables & methods by returning them:
+      return {
+          timeStarted: timeStarted,
+          timeElapsed: timeElapsed
+      };
+    }());
+    </script>
+
+    <script>
+    test('The timer is zero before it is started', function(assert) {
+      assert.equal( T.timeElapsed, 0, 'Message: timer is zero at start' );
+    });
+
+    </script>
+  </body>
+</html>
